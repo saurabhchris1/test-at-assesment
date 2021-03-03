@@ -5,18 +5,21 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import CheckIcon from '@material-ui/icons/Check';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import DisplayCard from "../../Component/DisplayCard/DisplayCard";
+import Grid from '@material-ui/core/Grid';
+import DisplayTestCases from "../../Containers/DisplayTestCases/DisplayTestCases";
+import data from "../../assets/data/data";
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 
 const drawerWidth = 240;
 
@@ -50,18 +53,28 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
+    },paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
     },
 }));
+
+const rows = data.test_cases;
 
 function ResponsiveDrawer(props) {
     const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
-
+    const [testCase, setTestCase] = React.useState(data.test_cases[0]);
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    const rowClickHandler = (index) =>{
+        setTestCase(data.test_cases[index])
+    }
 
     const drawer = (
         <div>
@@ -134,8 +147,31 @@ function ResponsiveDrawer(props) {
             </nav>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                <DisplayCard/>
-                <DisplayCard/>
+
+
+                <DisplayTestCases clickHandler={rowClickHandler} rows={rows}/>
+
+                <div className={classes.toolbar} />
+                <Typography variant="h4" gutterBottom> Test Steps</Typography>
+                    <Paper elevation={3} className={classes.paper}>
+                        <Grid container spacing={6}>
+                            {
+                                testCase.test_steps.map((row, index) => {
+                                    return(
+                                        <Grid item xs={12} sm={3} key={index}>
+
+                                            <DisplayCard data={row} key={index}/>
+                                        </Grid>
+                                    );
+                                })
+                            }
+
+
+                        </Grid>
+                    </Paper>
+
+
+
             </main>
         </div>
     );
